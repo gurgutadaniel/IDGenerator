@@ -19,7 +19,6 @@ header {
 
 header h1 {
   margin: 0;
-  font-size: 2rem;
 }
 
 /* Main content styles */
@@ -67,23 +66,11 @@ label {
 
 select,
 button {
-  padding: 10px;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-  margin-bottom: 12px;
 }
 
 button {
-  background-color: #333;
-  color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #555;
 }
 
 /* Generated ID display styles */
@@ -108,7 +95,4 @@ footer {
   color: #fff;
   text-align: center;
   padding: 1rem 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
 }

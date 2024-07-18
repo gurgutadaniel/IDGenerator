@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ID Generators</title>
-<link rel="stylesheet" href="https://gurgutadaniel.github.io/IDGenerator/styles.css">
-
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>ID Generators</h1>
+    <h1 class="text-center text-white pt-4 pb-4">ID Generators</h1>
   </header>
 
-  <main>
+  <main class="container mt-4">
     <section>
       <h2>About</h2>
       <p>This website provides tools to generate fictitious identification numbers (IDs) based on the formats used in various countries. These IDs are intended for testing purposes only.</p>
@@ -21,27 +21,34 @@
     <section id="generator">
       <h2>ID Generator</h2>
       <form id="idGeneratorForm">
-        <label for="country">Select a Country:</label>
-        <select id="country" name="country">
-          <option value="romania">Romania</option>
-          <option value="poland">Poland</option>
-          <option value="croatia">Croatia</option>
-          <option value="belgium">Belgium</option>
-          <option value="bulgaria">Bulgaria</option>
-          <option value="brazil">Brazil</option>
-        </select>
-        <button type="button" onclick="generateID()">Generate ID</button>
+        <div class="form-group">
+          <label for="country">Select a Country:</label>
+          <select class="form-control" id="country" name="country">
+            <option value="romania">Romania</option>
+            <option value="poland">Poland</option>
+            <option value="croatia">Croatia</option>
+            <option value="belgium">Belgium</option>
+            <option value="bulgaria">Bulgaria</option>
+            <option value="brazil">Brazil</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="generateID()">Generate ID</button>
       </form>
-      <div id="generatedID">
+      <div id="generatedID" class="mt-4">
         <!-- Generated ID will be displayed here -->
       </div>
     </section>
   </main>
 
-  <footer>
+  <footer class="bg-dark text-white text-center py-3 fixed-bottom">
     <p>&copy; 2024 Daniel G</p>
   </footer>
 
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh/jFc553smqjV6zPvq4s2cbrd+qLYhrmkhcX" crossorigin="anonymous"></script>
+
+  <!-- Your custom script -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,48 @@
+/* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+header h1 {
+  margin: 0;
+}
+
+main {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+section h2 {
+  font-size: 1.5rem;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
+}
+
+section p {
+  margin-top: 0;
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

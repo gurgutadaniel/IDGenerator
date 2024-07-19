@@ -38,30 +38,78 @@ function generateID() {
   document.getElementById("generatedID").innerHTML = `<p>Generated ID: <strong>${generatedID}</strong></p>`;
 }
 
-// Function to generate CNP for Romania
+// Function to generate a CNP for Romania
+
 function generateCNP_Romania() {
-  var gender = Math.random() < 0.5 ? 1 : 2; // Randomly choose gender: 1 for male, 2 for female
-  var dob = getRandomDate(1800, 2200); // Random date of birth
-  var county = Math.floor(Math.random() * 52) + 1; // Random county code
-  var unique = Math.floor(Math.random() * 1000); // Random unique identifier
-  var partialCNP = `${gender}${dob}${county.toString().padStart(2, '0')}${unique.toString().padStart(3, '0')}`;
-  var checksum = calculateCNPChecksum(partialCNP);
+  // Randomly choose gender and century
+  const genderOptions = [
+    { sex: 1, century: 1900 }, { sex: 2, century: 1900 },
+    { sex: 5, century: 2000 }, { sex: 6, century: 2000 },
+    { sex: 7, century: null }, { sex: 8, century: null }
+  ];
+
+  const genderChoice = genderOptions[Math.floor(Math.random() * genderOptions.length)];
+  const gender = genderChoice.sex;
+  const century = genderChoice.century;
+
+  // Generate random birth year between 1930 and 2006
+  const birthYear = Math.floor(Math.random() * (2006 - 1930 + 1)) + 1930;
+  const year = birthYear % 100; // Last two digits of the year
+
+  // Determine the century for the birth year
+  const birthCentury = (birthYear < 2000) ? 1900 : 2000;
+
+  // Generate random month and day
+  const month = Math.floor(Math.random() * 12) + 1; // Random month between 1 and 12
+  const day = Math.floor(Math.random() * 31) + 1; // Random day between 1 and 31
+
+  // Ensure valid date
+  if (!isValidDate(day, month, year, birthCentury)) {
+    return generateValidCNP(); // Retry if the date is invalid
+  }
+
+  // Zero pad year, month, and day
+  const yearStr = year.toString().padStart(2, '0');
+  const monthStr = month.toString().padStart(2, '0');
+  const dayStr = day.toString().padStart(2, '0');
+
+  // Generate random county code
+  const countyCode = Math.floor(Math.random() * 52) + 1;
+  const countyStr = countyCode.toString().padStart(2, '0');
+
+  // Generate random sequential code
+  const sequentialCode = Math.floor(Math.random() * 999) + 1;
+  const sequentialStr = sequentialCode.toString().padStart(3, '0');
+
+  // Combine all parts
+  const partialCNP = `${gender}${yearStr}${monthStr}${dayStr}${countyStr}${sequentialStr}`;
+
+  // Calculate the checksum digit
+  const checksum = calculateCNPChecksum(partialCNP);
+
+  // Return the complete CNP
   return `${partialCNP}${checksum}`;
+}
+
+// Function to check if the given day, month, and year form a valid date
+function isValidDate(day, month, year, century) {
+  const date = new Date(century + year, month - 1, day);
+  return date.getFullYear() === (century + year) &&
+         date.getMonth() === (month - 1) &&
+         date.getDate() === day;
 }
 
 // Function to calculate CNP checksum for Romania
 function calculateCNPChecksum(partialCNP) {
-  var weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
-  var sum = 0;
-  for (var i = 0; i < weights.length; i++) {
+  const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
+  let sum = 0;
+
+  for (let i = 0; i < weights.length; i++) {
     sum += parseInt(partialCNP.charAt(i)) * weights[i];
   }
-  var remainder = sum % 11;
-  if (remainder === 10) {
-    return 1;
-  } else {
-    return remainder;
-  }
+
+  const remainder = sum % 11;
+  return (remainder === 10) ? 1 : remainder;
 }
 
 // Function to generate PESEL for Poland

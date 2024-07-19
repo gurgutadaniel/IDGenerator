@@ -1,11 +1,3 @@
-// Function to generate random date within a given range
-function getRandomDate(minYear, maxYear) {
-  var year = Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
-  var month = Math.floor(Math.random() * 12) + 1;
-  var day = Math.floor(Math.random() * 28) + 1; // Assuming all months have max of 28 days for simplicity
-  return `${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`;
-}
-
 // Function to generate ID based on selected country
 function generateID() {
   var country = document.getElementById("country").value;
@@ -293,5 +285,125 @@ function generateNIN_Belgium() {
   return nin;
 }
 
-// Implement other necessary functions for different countries...
+///////////////////////////////////////////////////////////////////////////////// Function to generate CPF for Brazil
+function generateCPF_Brazil() {
+  // Helper function to generate a random integer between min and max (inclusive)
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
+  // Helper function to calculate the CPF check digit
+  function calculateCheckDigit(digits, weights) {
+    const sum = digits.reduce((acc, digit, index) => acc + digit * weights[index], 0);
+    const remainder = sum % 11;
+    return remainder < 2 ? 0 : 11 - remainder;
+  }
+
+  // Generate a random base number of 9 digits
+  const baseDigits = Array.from({ length: 9 }, () => getRandomInt(0, 9));
+
+  // Calculate the first check digit
+  const firstCheckDigit = calculateCheckDigit(baseDigits, [10, 9, 8, 7, 6, 5, 4, 3, 2]);
+
+  // Add the first check digit to the base digits and calculate the second check digit
+  const allDigits = [...baseDigits, firstCheckDigit];
+  const secondCheckDigit = calculateCheckDigit(allDigits, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]);
+
+  // Format the base number and check digits
+  const formattedBase = baseDigits.join('');
+  const formattedCPF = `${formattedBase.slice(0, 3)}.${formattedBase.slice(3, 6)}.${formattedBase.slice(6, 9)}-${firstCheckDigit}${secondCheckDigit}`;
+
+  return formattedCPF;
+}
+
+// Function to display the generated CPF on the webpage
+function displayGeneratedID() {
+  const generatedID = generateCPF_Brazil();
+  document.getElementById("generatedID").innerHTML = `<p>Generated CPF: <strong>${generatedID}</strong></p>`;
+}
+
+// Attach event listener to the button to generate and display CPF
+document.getElementById("generateButton").addEventListener("click", displayGeneratedID);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate EGN for Bulgaria
+
+// EGN weights and regions mappings
+const EGN_WEIGHTS = [2, 4, 8, 5, 10, 9, 7, 3, 6];
+const EGN_REGIONS_FIRST_NUM = {
+    '1': 31, '2': 51, '3': 71, '4': 91, '5': 111,
+    '6': 131, '7': 151, '8': 171, '9': 191, '10': 211
+};
+
+// Function to generate EGN for Bulgaria
+function generateEGN_Bulgaria() {
+    // Helper function to generate a random integer between min and max (inclusive)
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Helper function to validate date
+    function isValidDate(day, month, year) {
+        const date = new Date(year, month - 1, day);
+        return date.getFullYear() === year &&
+               date.getMonth() === (month - 1) &&
+               date.getDate() === day;
+    }
+
+    // Helper function to calculate EGN checksum
+    function calculateEGNChecksum(egn) {
+        let sum = 0;
+        for (let i = 0; i < 9; i++) {
+            sum += parseInt(egn.charAt(i)) * EGN_WEIGHTS[i];
+        }
+        let validChecksum = sum % 11;
+        if (validChecksum === 10) validChecksum = 0;
+        return validChecksum.toString();
+    }
+
+    // Generate random date of birth within the specified range
+    let year = getRandomInt(1930, 2005);
+    let month = getRandomInt(1, 12);
+    let day = getRandomInt(1, 28); // Simplify to 28 days for all months
+
+    // Ensure the generated date is valid
+    while (!isValidDate(day, month, year)) {
+        day = getRandomInt(1, 28);
+    }
+
+    // Generate random region code
+    let region = getRandomInt(0, 999);
+    // Ensure the region code is formatted with three digits
+    region = String(region).padStart(3, '0');
+
+    // Randomly choose gender (1 for male, 2 for female)
+    let sex = getRandomInt(1, 2);
+    // Adjust region to be odd for male and even for female
+    if (sex === 1 && region % 2 === 0) {
+        region = String(parseInt(region) - 1).padStart(3, '0'); // Ensure odd
+    } else if (sex === 2 && region % 2 !== 0) {
+        region = String(parseInt(region) + 1).padStart(3, '0'); // Ensure even
+    }
+
+    // Format EGN
+    const egn = `${String(year - (year % 100)).slice(-2)}` +
+                `${String(month).padStart(2, '0')}` +
+                `${String(day).padStart(2, '0')}` +
+                region;
+
+    // Calculate checksum and add to EGN
+    const checksum = calculateEGNChecksum(egn);
+
+    return `${egn}${checksum}`;
+}
+
+// Example usage
+console.log(generateEGN_Bulgaria());
+
+// Example for integrating into a web page
+function displayGeneratedEGN() {
+    const generatedID = generateEGN_Bulgaria();
+    document.getElementById("generatedID").innerHTML = `<p>Generated EGN: <strong>${generatedID}</strong></p>`;
+}
+
+// Attach event listener to the button to generate and display EGN
+document.getElementById("generateButton").addEventListener("click", displayGeneratedEGN);

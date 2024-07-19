@@ -327,15 +327,11 @@ document.getElementById("generateButton").addEventListener("click", displayGener
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate EGN for Bulgaria
 
-// EGN weights and regions mappings
-const EGN_WEIGHTS = [2, 4, 8, 5, 10, 9, 7, 3, 6];
-const EGN_REGIONS_FIRST_NUM = {
-    '1': 31, '2': 51, '3': 71, '4': 91, '5': 111,
-    '6': 131, '7': 151, '8': 171, '9': 191, '10': 211
-};
-
 // Function to generate EGN for Bulgaria
 function generateEGN_Bulgaria() {
+    // EGN weights
+    const EGN_WEIGHTS = [2, 4, 8, 5, 10, 9, 7, 3, 6];
+
     // Helper function to generate a random integer between min and max (inclusive)
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -360,15 +356,15 @@ function generateEGN_Bulgaria() {
         return validChecksum.toString();
     }
 
-    // Generate random date of birth within the specified range
+    // Generate random year of birth between 1930 and 2005
     let year = getRandomInt(1930, 2005);
-    let month = getRandomInt(1, 12);
-    let day = getRandomInt(1, 28); // Simplify to 28 days for all months
+    // Convert to two-digit year format for EGN
+    let twoDigitYear = year % 100;
 
-    // Ensure the generated date is valid
-    while (!isValidDate(day, month, year)) {
-        day = getRandomInt(1, 28);
-    }
+    // Generate random month
+    let month = getRandomInt(1, 12);
+    // Generate random day, ensuring it's valid for the month and year
+    let day = getRandomInt(1, new Date(year, month, 0).getDate());
 
     // Generate random region code
     let region = getRandomInt(0, 999);
@@ -385,7 +381,7 @@ function generateEGN_Bulgaria() {
     }
 
     // Format EGN
-    const egn = `${String(year - (year % 100)).slice(-2)}` +
+    const egn = `${String(twoDigitYear).padStart(2, '0')}` +
                 `${String(month).padStart(2, '0')}` +
                 `${String(day).padStart(2, '0')}` +
                 region;

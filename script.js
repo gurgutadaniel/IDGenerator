@@ -259,44 +259,42 @@ function generateJMBG_Croatia() {
 
 ///////////////////////////////////////////////////////////////////////////////// Function to generate NIN for Belgium
 function generateNIN_Belgium() {
-  var dob = getRandomDate(1970, 2003); // Random date of birth (18 years ago or older)
-  var unique = Math.floor(Math.random() * 1000); // Random unique identifier
-  var partialNIN = `${dob}${unique.toString().padStart(3, '0')}`;
-  var checksum = calculateNINChecksum(partialNIN);
-  return `${partialNIN}${checksum}`;
-}
+  // Helper function to generate a random integer between min and max (inclusive)
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
-// Function to calculate NIN checksum for Belgium
-function calculateNINChecksum(partialNIN) {
-  // Placeholder for actual NIN checksum calculation
-  // Implement the proper algorithm for production use
-  return Math.floor(Math.random() * 10); // Placeholder, actual algorithm needed
-}
+  // Helper function to generate a random date in the format yy.mm.dd
+  function getRandomDate() {
+    const day = String(getRandomInt(1, 28)).padStart(2, '0'); // Ensure day is valid
+    const month = String(getRandomInt(1, 12)).padStart(2, '0'); // Ensure month is valid
+    const year = String(getRandomInt(1930, 2005)).slice(-2); // Year should be between 1930 and 2005
+    return `${year}.${month}.${day}`;
+  }
 
-// Function to generate EGN for Bulgaria
-function generateEGN_Bulgaria() {
-  var dob = getRandomDate(1800, 2200); // Random date of birth
-  var unique = Math.floor(Math.random() * 1000); // Random unique identifier
-  // Implement EGN generation logic here
-  var partialEGN = `${dob}${unique.toString().padStart(3, '0')}`;
-  // Placeholder for EGN checksum calculation
-  return `${partialEGN}0`; // Placeholder, actual checksum needed
-}
+  // Generate a random date
+  const dateStr = getRandomDate();
+  console.log("Generated date:", dateStr);
 
-// Function to generate CPF for Brazil
-function generateCPF_Brazil() {
-  var dob = getRandomDate(1800, 2200); // Random date of birth
-  var unique = Math.floor(Math.random() * 100000000); // Random unique identifier
-  var partialCPF = `${dob}${unique.toString().padStart(8, '0')}`;
-  var checksum = calculateCPFChecksum(partialCPF);
-  return `${partialCPF}${checksum}`;
-}
+  // Generate a random sequential number (odd for males, even for females)
+  const sequentialNumber = String(getRandomInt(0, 999)).padStart(3, '0');
+  const isMale = getRandomInt(0, 1) === 0; // Randomly choose gender
+  const finalSequentialNumber = isMale ? sequentialNumber : (parseInt(sequentialNumber) + 1).toString().padStart(3, '0'); // Ensure even number for females
 
-// Function to calculate CPF checksum for Brazil
-function calculateCPFChecksum(partialCPF) {
-  // Placeholder for actual CPF checksum calculation
-  // Implement the proper algorithm for production use
-  return Math.floor(Math.random() * 10); // Placeholder, actual algorithm needed
+  // Form the control number by concatenating date and sequential number
+  const controlNumber = dateStr.replace(/\./g, '') + finalSequentialNumber;
+
+  // Calculate the checksum using modulo 97
+  const checkSum = 97 - (parseInt(controlNumber) % 97);
+  const checkDigit = checkSum.toString().padStart(2, '0');
+
+  // Form the final Belgian NIN
+  const nin = `${dateStr}-${finalSequentialNumber}.${checkDigit}`;
+
+  // Print the generated Belgian NIN
+  console.log("Belgian NIN:", nin);
+
+  return nin;
 }
 
 // Implement other necessary functions for different countries...

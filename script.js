@@ -10,8 +10,8 @@ function generateID() {
     case "poland":
       generatedID = generatePESEL_Poland();
       break;
-    case "croatia":
-      generatedID = generateJMBG_Croatia();
+    case "serbia":
+      generatedID = generateJMBG_Serbia();
       break;
     case "belgium":
       generatedID = generateNIN_Belgium();
@@ -200,7 +200,7 @@ function calculateControlDigit(pesel) {
   return checksum;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate JMBG for Croatia
+/////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate JMBG for Serbia
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -223,7 +223,7 @@ function isLeapYear(year) {
   return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
 }
 
-function getRandomCroatianRegion() {
+function getRandomSerbiaRegion() {
   const regions = ['30', '31', '32', '33', '34', '35', '36', '37', '38', '39'];
   return regions[getRandomInt(0, regions.length - 1)];
 }
@@ -238,9 +238,9 @@ function calculateChecksum(baseJMBG) {
   return (m === 10 || m === 11) ? '0' : m.toString();
 }
 
-function generateJMBG_Croatia() {
+function generateJMBG_Serbia() {
   const { day, month, year } = getRandomDate(1930, 2005); // Random date of birth between 1930 and 2005
-  const region = getRandomCroatianRegion();
+  const region = getRandomSerbiaRegion();
   const BBB = getRandomInt(0, 999).toString().padStart(3, '0');
   
   const baseJMBG = `${day}${month}${year}${region}${BBB}`;

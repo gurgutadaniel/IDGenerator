@@ -19,7 +19,7 @@ function generateID() {
       generatedID = generatePESEL_Poland();
       break;
     case "croatia":
-      generatedID = generateOIB_Croatia();
+      generatedID = generateJMBG_Croatia();
       break;
     case "belgium":
       generatedID = generateNIN_Belgium();
@@ -38,7 +38,7 @@ function generateID() {
   document.getElementById("generatedID").innerHTML = `<p>Generated ID: <strong>${generatedID}</strong></p>`;
 }
 
-// Function to generate a CNP for Romania
+//////////////////////////////////////////////////////////////////////////////////// Function to generate a CNP for Romania
 
 function generateCNP_Romania() {
   // Randomly choose gender and century
@@ -112,7 +112,7 @@ function calculateCNPChecksum(partialCNP) {
   return (remainder === 10) ? 1 : remainder;
 }
 
-// Function to generate PESEL for Poland
+////////////////////////////////////////////////////////////////////////////// Function to generate PESEL for Poland
 function generatePESEL_Poland() {
   // Generăm anul de naștere între 1930 și 2005
   const year = getRandomYearInRange(1930, 2005);
@@ -208,27 +208,56 @@ function calculateControlDigit(pesel) {
   return checksum;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate OIB for Croatia
-function generateOIB_Croatia() {
-  var dob = getRandomDate(1970, 2003); // Random date of birth (18 years ago or older)
-  var unique = Math.floor(Math.random() * 100000000); // Random unique identifier
-  var partialOIB = `${dob}${unique.toString().padStart(8, '0')}`;
-  var checksum = calculateOIBChecksum(partialOIB);
-  return `${partialOIB}${checksum}`;
+/////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate JMBG for Croatia
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Function to calculate OIB checksum for Croatia
-function calculateOIBChecksum(partialOIB) {
-  var weights = [10, 5, 7, 2, 3, 4, 5, 6, 7];
-  var sum = 0;
-  for (var i = 0; i < weights.length; i++) {
-    sum += parseInt(partialOIB.charAt(i)) * weights[i];
+function getRandomDate(startYear, endYear) {
+  const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  let day = getRandomInt(1, 31);
+  let month = getRandomInt(1, 12);
+  let year = getRandomInt(startYear, endYear);
+  
+  // Ensure the day is valid for the month
+  while (day > daysInMonth[month - 1] || (month === 2 && day === 29 && !isLeapYear(year))) {
+      day = getRandomInt(1, daysInMonth[month - 1]);
   }
-  var remainder = sum % 11;
-  return (11 - remainder) % 10;
+  
+  return { day: day.toString().padStart(2, '0'), month: month.toString().padStart(2, '0'), year: (year % 1000).toString().padStart(3, '0') };
 }
 
-// Function to generate NIN for Belgium
+function isLeapYear(year) {
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}
+
+function getRandomCroatianRegion() {
+  const regions = ['30', '31', '32', '33', '34', '35', '36', '37', '38', '39'];
+  return regions[getRandomInt(0, regions.length - 1)];
+}
+
+function calculateChecksum(baseJMBG) {
+  const weights = [7, 6, 5, 4, 3, 2];
+  let sum = 0;
+  for (let i = 0; i < baseJMBG.length; i++) {
+      sum += parseInt(baseJMBG[i]) * weights[i % 6];
+  }
+  let m = 11 - (sum % 11);
+  return (m === 10 || m === 11) ? '0' : m.toString();
+}
+
+function generateJMBG_Croatia() {
+  const { day, month, year } = getRandomDate(1930, 2005); // Random date of birth between 1930 and 2005
+  const region = getRandomCroatianRegion();
+  const BBB = getRandomInt(0, 999).toString().padStart(3, '0');
+  
+  const baseJMBG = `${day}${month}${year}${region}${BBB}`;
+  const checksum = calculateChecksum(baseJMBG);
+
+  return `${baseJMBG}${checksum}`;
+}
+
+///////////////////////////////////////////////////////////////////////////////// Function to generate NIN for Belgium
 function generateNIN_Belgium() {
   var dob = getRandomDate(1970, 2003); // Random date of birth (18 years ago or older)
   var unique = Math.floor(Math.random() * 1000); // Random unique identifier
@@ -269,3 +298,6 @@ function calculateCPFChecksum(partialCPF) {
   // Implement the proper algorithm for production use
   return Math.floor(Math.random() * 10); // Placeholder, actual algorithm needed
 }
+
+// Implement other necessary functions for different countries...
+

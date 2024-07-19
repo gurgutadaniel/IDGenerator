@@ -114,25 +114,101 @@ function calculateCNPChecksum(partialCNP) {
 
 // Function to generate PESEL for Poland
 function generatePESEL_Poland() {
-  var dob = getRandomDate(1800, 2200); // Random date of birth
-  var unique = Math.floor(Math.random() * 10000); // Random unique identifier
-  var partialPESEL = `${dob}${unique.toString().padStart(4, '0')}`;
-  var checksum = calculatePESELChecksum(partialPESEL);
-  return `${partialPESEL}${checksum}`;
+  // Generăm anul de naștere între 1930 și 2005
+  const year = getRandomYearInRange(1930, 2005);
+  const date = new Date(year, getRandomMonth() - 1, getRandomDay()); // -1 deoarece lunile în JavaScript sunt indexate de la 0
+  const gender = Math.random() < 0.5 ? 'male' : 'female'; // Gen random
+
+  // Formatăm data în formatul PESEL
+  let peselDate = formatDate(date);
+  
+  // Ajustăm luna pentru a reflecta perioada de naștere
+  peselDate = adjustMonth(peselDate, getMonthAdjustment(year));
+
+  // Adăugăm un identificator unic și cifra de control
+  const uniqueId = generateRandomDigits(3);
+  const genderDigit = generateDigitForGender(gender);
+  const peselWithoutChecksum = peselDate + uniqueId + genderDigit;
+  const checksum = calculateControlDigit(peselWithoutChecksum);
+
+  return peselWithoutChecksum + checksum;
 }
 
-// Function to calculate PESEL checksum for Poland
-function calculatePESELChecksum(partialPESEL) {
-  var weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
-  var sum = 0;
-  for (var i = 0; i < weights.length; i++) {
-    sum += parseInt(partialPESEL.charAt(i)) * weights[i];
+// Funcția pentru generarea unui an în intervalul specificat
+function getRandomYearInRange(minYear, maxYear) {
+  return Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
+}
+
+// Funcția pentru generarea unei luni aleatorii între 1 și 12
+function getRandomMonth() {
+  return Math.floor(Math.random() * 12) + 1;
+}
+
+// Funcția pentru generarea unei zile aleatorii între 1 și 28
+function getRandomDay() {
+  return Math.floor(Math.random() * 28) + 1;
+}
+
+// Funcția pentru format data în format PESEL
+function formatDate(date) {
+  const yy = date.getFullYear().toString().slice(-2);
+  const MM = ('0' + (date.getMonth() + 1)).slice(-2);
+  const dd = ('0' + date.getDate()).slice(-2);
+  return yy + MM + dd;
+}
+
+// Funcția pentru ajustarea lunii pentru secolul corespunzător
+function adjustMonth(dateString, adjustment) {
+  let year = parseInt(dateString.slice(0, 2), 10);
+  let month = parseInt(dateString.slice(2, 4), 10);
+  month += adjustment;
+  if (month > 12) {
+    year += Math.floor(month / 12);
+    month = month % 12;
   }
-  var checksum = (10 - (sum % 10)) % 10;
+  return ('0' + year).slice(-2) + ('0' + month).slice(-2) + dateString.slice(4);
+}
+
+// Funcția pentru determinarea ajustării lunii în funcție de an
+function getMonthAdjustment(year) {
+  if (year >= 2000 && year < 2100) {
+    return 20;
+  } else if (year >= 2100 && year < 2200) {
+    return 40;
+  } else if (year >= 2200 && year < 2300) {
+    return 60;
+  } else if (year < 1900) {
+    return 80;
+  }
+  return 0;
+}
+
+// Funcția pentru generarea cifrelor random
+function generateRandomDigits(length) {
+  let digits = '';
+  for (let i = 0; i < length; i++) {
+    digits += Math.floor(Math.random() * 10);
+  }
+  return digits;
+}
+
+// Funcția pentru generarea cifrei de gen
+function generateDigitForGender(gender) {
+  const baseDigit = Math.floor(Math.random() * 5) * 2;
+  return gender === 'male' ? baseDigit + 1 : baseDigit;
+}
+
+// Funcția pentru calculul cifrei de control
+function calculateControlDigit(pesel) {
+  const weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+  const digits = pesel.split('').map(Number);
+  const sum = digits.slice(0, 10).reduce((acc, digit, i) => acc + digit * weights[i], 0);
+  const modulo = sum % 10;
+  const checksum = (10 - modulo) % 10;
   return checksum;
 }
 
-// Function to generate OIB for Croatia
+/////////////////////////////////////////////////////////////////////////////////////////////////////// Function to generate OIB for Croatia
 function generateOIB_Croatia() {
   var dob = getRandomDate(1970, 2003); // Random date of birth (18 years ago or older)
   var unique = Math.floor(Math.random() * 100000000); // Random unique identifier
@@ -193,6 +269,3 @@ function calculateCPFChecksum(partialCPF) {
   // Implement the proper algorithm for production use
   return Math.floor(Math.random() * 10); // Placeholder, actual algorithm needed
 }
-
-// Implement other necessary functions for different countries...
-

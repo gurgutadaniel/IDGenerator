@@ -1,12 +1,18 @@
 /* styles.css */
 
 /* Reset and basic styles */
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
+html, body {
+  height: 100%;           /* Ensure the html and body take up the full viewport height */
   margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
+}
+
+body {
+  display: flex;          /* Use flexbox layout for the body */
+  flex-direction: column; /* Arrange children in a column */
+}
+
+main {
+  flex: 1;                /* Make the main content area take up the remaining space */
 }
 
 /* Style for the header */
@@ -14,13 +20,13 @@ header {
   background-color: #096dd9;
   color: #fff;
   text-align: center;
-  padding: 0.01cm;  /* Padding in centimeters */
+  padding: 0.01cm;        /* Padding in centimeters */
 }
 
 /* Style for the h1 element inside the header */
 header h1 {
-  margin: 0;       /* Remove default margin */
-  font-size: 2rem; /* Smaller font size */
+  margin: 0;              /* Remove default margin */
+  font-size: 2rem;        /* Smaller font size */
 }
 
 /* Main content styles */
@@ -93,16 +99,8 @@ button {
 
 /* Footer styles */
 footer {
-  background-color: #096dd9; /* Custom background color */
+  background-color: #333; /* Custom background color */
   color: #f8f9fa;         /* Custom text color */
   text-align: center;     /* Center text alignment */
   padding: 1rem 0;        /* Padding around the footer */
-  position: fixed;        /* Fix the footer to the bottom of the page */
-  bottom: 0;              /* Align it to the bottom */
-  width: 100%;            /* Ensure the footer spans the full width */
-}
-
-footer p {
-  margin: 0;              /* Remove default margin from the paragraph */
-  font-size: 0.9rem;      /* Adjust font size if needed */
 }

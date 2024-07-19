@@ -274,7 +274,6 @@ function generateNIN_Belgium() {
 
   // Generate a random date
   const dateStr = getRandomDate();
-  console.log("Generated date:", dateStr);
 
   // Generate a random sequential number (odd for males, even for females)
   const sequentialNumber = String(getRandomInt(0, 999)).padStart(3, '0');
@@ -290,9 +289,6 @@ function generateNIN_Belgium() {
 
   // Form the final Belgian NIN
   const nin = `${dateStr}-${finalSequentialNumber}.${checkDigit}`;
-
-  // Print the generated Belgian NIN
-  console.log("Belgian NIN:", nin);
 
   return nin;
 }

@@ -403,3 +403,14 @@ function displayGeneratedEGN() {
 
 // Attach event listener to the button to generate and display EGN
 document.getElementById("generateButton").addEventListener("click", displayGeneratedEGN);
+
+function generatePassword() {
+  const length = 12;
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*^?"
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+   document.getElementById('generatedPassword').innerHTML = `Generated Password: <strong>${password}</strong>`;
+}

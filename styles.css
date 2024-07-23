@@ -103,6 +103,29 @@ button {
   font-weight: bold;
 }
 
+/* Password Generator section styles */
+#password-generator {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+#generatedPassword {
+  background-color: #e9f7fc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+#generatedPassword p {
+  margin: 0;
+}
+
+#generatedPassword strong {
+  font-weight: bold;
+}
+
 /* Footer styles */
 footer {
   background-color: #333;  /* Custom background color */

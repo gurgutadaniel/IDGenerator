@@ -406,11 +406,34 @@ document.getElementById("generateButton").addEventListener("click", displayGener
 
 function generatePassword() {
   const length = 12;
-  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*^?"
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randomIndex];
+  
+  // Character sets for different categories
+  const lowerCaseCharset = "abcdefghijklmnopqrstuvwxyz";
+  const upperCaseCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numberCharset = "0123456789";
+  const specialCharset = "!@#$%&*^?";
+
+  // Ensure at least one character from each category
+  const passwordParts = [
+    lowerCaseCharset[Math.floor(Math.random() * lowerCaseCharset.length)],
+    upperCaseCharset[Math.floor(Math.random() * upperCaseCharset.length)],
+    numberCharset[Math.floor(Math.random() * numberCharset.length)],
+    specialCharset[Math.floor(Math.random() * specialCharset.length)]
+  ];
+
+  // Fill the rest of the password with random characters from all categories
+  const allCharset = lowerCaseCharset + upperCaseCharset + numberCharset + specialCharset;
+  for (let i = passwordParts.length; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * allCharset.length);
+    passwordParts.push(allCharset[randomIndex]);
   }
-   document.getElementById('generatedPassword').innerHTML = `Generated Password: <strong>${password}</strong>`;
+
+  // Shuffle the password parts to ensure randomness
+  for (let i = passwordParts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [passwordParts[i], passwordParts[j]] = [passwordParts[j], passwordParts[i]];
+  }
+
+  const password = passwordParts.join('');
+  document.getElementById('generatedPassword').innerHTML = `Generated Password: <strong>${password}</strong>`;
 }

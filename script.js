@@ -33,54 +33,80 @@ function generateID() {
 //////////////////////////////////////////////////////////////////////////////////// Function to generate a CNP for Romania
 
 function generateCNP_Romania() {
-  // Randomly choose gender and century
+  // Opțiuni de sex, doar pentru 1900
   const genderOptions = [
-    { sex: 1, century: 1900 }, { sex: 2, century: 1900 },
-    { sex: 5, century: 2000 }, { sex: 6, century: 2000 },
-    { sex: 7, century: null }, { sex: 8, century: null }
+    { sex: 1, century: 1900 }, // bărbați
+    { sex: 2, century: 1900 }  // femei
   ];
 
   const genderChoice = genderOptions[Math.floor(Math.random() * genderOptions.length)];
   const gender = genderChoice.sex;
-  const century = genderChoice.century;
 
-  // Generate random birth year between 1930 and 2006
-  const birthYear = Math.floor(Math.random() * (2006 - 1930 + 1)) + 1930;
-  const year = birthYear % 100; // Last two digits of the year
+  // Generăm un an de naștere între 1930 și 1999
+  const birthYear = Math.floor(Math.random() * (1999 - 1930 + 1)) + 1930; 
+  const year = birthYear % 100; // Ultimele două cifre ale anului
 
-  // Determine the century for the birth year
-  const birthCentury = (birthYear < 2000) ? 1900 : 2000;
+  // Setăm întotdeauna secolul la 1900
+  const birthCentury = 1900;
 
-  // Generate random month and day
-  const month = Math.floor(Math.random() * 12) + 1; // Random month between 1 and 12
-  const day = Math.floor(Math.random() * 31) + 1; // Random day between 1 and 31
+  // Generăm lună și zi aleatorii
+  const month = Math.floor(Math.random() * 12) + 1; // Lună aleatorie între 1 și 12
+  const day = Math.floor(Math.random() * 31) + 1; // Zi aleatorie între 1 și 31
 
-  // Ensure valid date
+  // Asigurăm o dată validă
   if (!isValidDate(day, month, year, birthCentury)) {
-    return generateValidCNP(); // Retry if the date is invalid
+    return generateCNP_Romania(); // Retry if the date is invalid
   }
 
   // Zero pad year, month, and day
-  const yearStr = year.toString().padStart(2, '0');
+  const yearStr = year.toString().padStart(2, '0'); // 00-99
   const monthStr = month.toString().padStart(2, '0');
   const dayStr = day.toString().padStart(2, '0');
 
-  // Generate random county code
-  const countyCode = Math.floor(Math.random() * 52) + 1;
-  const countyStr = countyCode.toString().padStart(2, '0');
+  // Lista codurilor județului valide
+  const validCountyCodes = [
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
+    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
+    '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'
+  ];
 
-  // Generate random sequential code
+  // Generăm un cod județ valid
+  const countyStr = validCountyCodes[Math.floor(Math.random() * validCountyCodes.length)];
+
+  // Generăm codul secvențial
   const sequentialCode = Math.floor(Math.random() * 999) + 1;
   const sequentialStr = sequentialCode.toString().padStart(3, '0');
 
-  // Combine all parts
+  // Combinăm toate părțile
   const partialCNP = `${gender}${yearStr}${monthStr}${dayStr}${countyStr}${sequentialStr}`;
 
-  // Calculate the checksum digit
+  // Calculăm cifra de control
   const checksum = calculateCNPChecksum(partialCNP);
 
-  // Return the complete CNP
+  // Returnăm CNP-ul complet
   return `${partialCNP}${checksum}`;
+}
+
+// Function to check if the given day, month, and year form a valid date
+function isValidDate(day, month, year, century) {
+  const date = new Date(century + year, month - 1, day);
+  return date.getFullYear() === (century + year) &&
+         date.getMonth() === (month - 1) &&
+         date.getDate() === day;
+}
+
+// Function to calculate CNP checksum for Romania
+function calculateCNPChecksum(partialCNP) {
+  const weights = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
+  let sum = 0;
+
+  for (let i = 0; i < weights.length; i++) {
+    sum += parseInt(partialCNP.charAt(i)) * weights[i];
+  }
+
+  const remainder = sum % 11;
+  return (remainder === 10) ? 1 : remainder;
 }
 
 // Function to check if the given day, month, and year form a valid date
